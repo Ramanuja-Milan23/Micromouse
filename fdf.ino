@@ -1,8 +1,8 @@
-
 #include <Wire.h>
 #include <SoftWire.h>
 #include <AsyncDelay.h>
 #include <cppQueue.h>
+
 
 
 
@@ -47,8 +47,8 @@ int Wall[11][9]=
 {
   {9,9,9,9,9,9,9,9,9},
   {9,7,6,5,4,5,6,7,9},
-  {9,6,5,4,3,4,5,6,9},
   {9,5,4,3,2,3,4,5,9},
+  {9,6,5,4,3,4,5,6,9},
   {9,4,3,2,1,2,3,4,9},
   {9,3,2,1,0,1,2,3,9},
   {9,4,3,2,1,2,3,4,9},
@@ -91,7 +91,7 @@ void push(x); //DONE
 int pop(); //DONE
 */
 
-float wall_check(int trig, int echo); //CHECK THE DISTANCE VALUE
+
 
 void forward() {
   int last_state, state, counter=0;
@@ -114,7 +114,9 @@ void forward() {
   digitalWrite(rwf, LOW);
   digitalWrite(lwb, LOW);
   digitalWrite(rwb, LOW);
+  printf("%d %d\n" ,x,y);
   return;
+  
 };
 
 double angle() { // returns [0,360)
@@ -675,15 +677,16 @@ int config(){ //DONE
 };
 
 float wall_check(int trig, int echo){ //CHECK THE DISTANCE VALUE
-
   digitalWrite(trig, LOW);
   delayMicroseconds(2);
   digitalWrite(trig, HIGH);
   delayMicroseconds(10);
   digitalWrite(trig, LOW);
   float distCm = (pulseIn(echo, HIGH)*0.034/2);
-  if(distCm<30){return 1;} else if(distCm>=30) {return 0;}; //CHECK THE DISTANCE
+  if(distCm<15){return 1;} else if(distCm>=15) {return 0;}; //CHECK THE DISTANCE
+
   return 0;
+
 };
  
 
@@ -998,7 +1001,9 @@ void faceforward()
   }
   digitalWrite(rwf, LOW);
   digitalWrite(lwb, LOW);
+  o=0;
 }
+
 
 
 
@@ -1058,46 +1063,34 @@ void setup() {
   int lw=wall_check(l_trigPin, l_echoPin);
   int fw=wall_check(f_trigPin, f_echoPin);
   int rw=wall_check(r_trigPin, r_echoPin);
-    if (lw==1 && fw==0 && rw==0)
+  if (lw==1 && fw==0 && rw==0)
   {
     Wall[8][0]= -5;
-    forward();
-    y--;
   }
   else if (lw==0 && fw==1 && rw==0)
   {
     Wall[8][0]= -10;
-    right();
-    or++; 
-    forward();
-    x++;
   }
   else if (lw==0 && fw==0 && rw==1)
   {
     Wall[8][0]= -6;
-    forward();
-    y--;
   }
   else if (lw==0 && fw==1 && rw==1)
   {
     Wall[8][0]= -12;
-
   }
   else if (lw==1 && fw==1 && rw==0)
   {
     Wall[8][0]= -14;
-    right();
-    or++; 
-    forward();
-    x++;
   }  
   else if (lw==1 && fw==0 && rw==1)
   {
     Wall[8][0]= -11;
-    forward();
-    y--;
   }
   else if (lw==0 && fw==0 && rw==0)
+  {
+    Wall[8][0]= -4;
+  }
 }
 
 
@@ -2434,7 +2427,8 @@ void loop()
   }
 
   if(o==3){
-  case
+  switch(Wall[y][x]){
+  case '-4':
     if(m[y][x-1]==m[y][x]-1){
       Rear++;
       enqueue(1);
